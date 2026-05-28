@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercício TOC – T/hora de Gargalo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 10px 14px; border: 1px solid #e2e8f0; text-align: center; }
+  th { background: #1e3a5f; color: white; font-weight: 600; }
+  th:first-child, td:first-child { text-align: left; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .answer-row td { background: #dcfce7 !important; font-weight: 600; color: #166534; }
+  .wrong-row td { background: #fee2e2 !important; }
+  details summary { cursor: pointer; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  .chevron { transition: transform 0.25s; display: inline-block; }
+  details[open] .chevron { transform: rotate(180deg); }
+</style>
+</head>
+<body class="min-h-screen py-10 px-4">
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <!-- Header -->
+  <div class="bg-[#1e3a5f] text-white rounded-2xl p-8">
+    <p class="text-blue-300 text-xs font-semibold uppercase tracking-widest mb-1">Contabilidade Gerencial · Teoria das Restrições</p>
+    <h1 class="text-3xl font-bold">Exercício Prático</h1>
+    <h2 class="text-xl font-light text-blue-200 mt-1">Throughput por Hora de Gargalo — T/RG</h2>
+    <p class="mt-4 text-blue-300 text-sm">Baseado em: GOLDRATT, E. M.; COX, J. <em>A Meta</em>. 3. ed. São Paulo: Nobel, 2004.</p>
+  </div>
+
+  <!-- Contexto -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm">
+    <h3 class="text-base font-semibold text-[#1e3a5f] border-l-4 border-[#1e3a5f] pl-3 mb-4">Contexto do Caso</h3>
+    <p class="text-gray-700 leading-relaxed mb-3">
+      A <strong>Metálica Sul Ltda.</strong> fabrica três produtos (A, B e C) e possui um gargalo identificado na
+      <strong>Máquina de Usinagem (MU)</strong>, que opera <strong>8 horas/dia por 20 dias/mês</strong>
+      — totalizando <strong>9.600 minutos disponíveis por mês</strong>.
+    </p>
+    <p class="text-gray-700 leading-relaxed">
+      A empresa possui demanda ilimitada para todos os produtos. O gestor financeiro precisa definir
+      <strong>qual mix de produção maximiza o lucro</strong>, considerando a restrição da MU.
+    </p>
+    <div class="mt-5 grid grid-cols-3 gap-4 text-center">
+      <div class="bg-blue-50 rounded-xl p-4">
+        <p class="text-2xl font-bold text-blue-800">9.600</p>
+        <p class="text-xs text-blue-600 mt-1">min/mês disponíveis</p>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-4">
+        <p class="text-2xl font-bold text-blue-800">3</p>
+        <p class="text-xs text-blue-600 mt-1">produtos fabricados</p>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-4">
+        <p class="text-2xl font-bold text-blue-800">1 gargalo</p>
+        <p class="text-xs text-blue-600 mt-1">Máquina de Usinagem</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dados -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm">
+    <h3 class="text-base font-semibold text-[#1e3a5f] border-l-4 border-[#1e3a5f] pl-3 mb-4">Dados dos Produtos</h3>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Informação</th>
+            <th>Produto A</th>
+            <th>Produto B</th>
+            <th>Produto C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Preço de venda (R$/un.)</td><td>R$ 120,00</td><td>R$ 150,00</td><td>R$ 200,00</td></tr>
+          <tr><td>Custo de material direto (R$/un.)</td><td>R$ 40,00</td><td>R$ 60,00</td><td>R$ 80,00</td></tr>
+          <tr><td>Custo de mão de obra direta (R$/un.)</td><td>R$ 25,00</td><td>R$ 35,00</td><td>R$ 50,00</td></tr>
+          <tr><td>Tempo na Máquina de Usinagem (min/un.)</td><td>10 min</td><td>20 min</td><td>40 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-sm text-gray-500">Despesa operacional total mensal (inclui mão de obra, CIF fixos etc.): <strong>R$ 80.000</strong></p>
+  </div>
+
+  <!-- Questões -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm">
+    <h3 class="text-base font-semibold text-[#1e3a5f] border-l-4 border-[#1e3a5f] pl-3 mb-5">Questões</h3>
+    <div class="space-y-4">
+
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+        <p class="font-semibold text-gray-800">Questão 1</p>
+        <p class="text-gray-700 mt-1">Calcule a <strong>Margem de Contribuição unitária</strong> (modelo tradicional) de cada produto e elabore o ranking de prioridade.</p>
+        <p class="text-xs text-gray-400 mt-2">MC = Preço − Material − Mão de obra direta</p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+        <p class="font-semibold text-gray-800">Questão 2</p>
+        <p class="text-gray-700 mt-1">Calcule o <strong>Throughput unitário</strong> (TOC) de cada produto. Explique, em 2 linhas, por que a mão de obra direta não entra nesse cálculo.</p>
+        <p class="text-xs text-gray-400 mt-2">T = Preço − Custos totalmente variáveis (apenas materiais)</p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+        <p class="font-semibold text-gray-800">Questão 3</p>
+        <p class="text-gray-700 mt-1">Calcule o <strong>Throughput por minuto de gargalo (T/RG)</strong> de cada produto. Elabore o novo ranking de prioridade pela perspectiva TOC.</p>
+        <p class="text-xs text-gray-400 mt-2">T/RG = Throughput unitário ÷ Tempo na Máquina de Usinagem</p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+        <p class="font-semibold text-gray-800">Questão 4</p>
+        <p class="text-gray-700 mt-1">Considerando que a empresa produzirá apenas um produto (demanda ilimitada), calcule o <strong>Lucro Líquido mensal</strong> em dois cenários:</p>
+        <ul class="list-disc ml-5 mt-2 text-sm text-gray-700 space-y-1">
+          <li>Cenário 1: decisão pelo ranking tradicional (maior MC)</li>
+          <li>Cenário 2: decisão pelo ranking TOC (maior T/RG)</li>
+        </ul>
+        <p class="text-xs text-gray-400 mt-2">LL = Throughput total − Despesa operacional mensal</p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+        <p class="font-semibold text-gray-800">Questão 5 — Reflexão crítica</p>
+        <p class="text-gray-700 mt-1">Qual é a crítica da TOC ao custeio por absorção na tomada de decisão de mix de produtos? Elabore em, no máximo, 4 linhas.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Gabarito -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm">
+    <h3 class="text-base font-semibold text-[#1e3a5f] border-l-4 border-[#1e3a5f] pl-3 mb-5">Gabarito Comentado</h3>
+    <div class="space-y-3">
+
+      <!-- Q1 -->
+      <details class="border border-gray-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition">
+          <span class="font-medium text-gray-800">Questão 1 — Margem de Contribuição (modelo tradicional)</span>
+          <span class="chevron text-gray-400 text-sm">▼</span>
+        </summary>
+        <div class="p-5">
+          <table>
+            <thead><tr><th>Cálculo</th><th>Produto A</th><th>Produto B</th><th>Produto C</th></tr></thead>
+            <tbody>
+              <tr><td>Preço de venda</td><td>R$ 120,00</td><td>R$ 150,00</td><td>R$ 200,00</td></tr>
+              <tr><td>(−) Material direto</td><td>R$ 40,00</td><td>R$ 60,00</td><td>R$ 80,00</td></tr>
+              <tr><td>(−) Mão de obra direta</td><td>R$ 25,00</td><td>R$ 35,00</td><td>R$ 50,00</td></tr>
+              <tr class="answer-row"><td><strong>MC unitária</strong></td><td><strong>R$ 55,00</strong></td><td><strong>R$ 55,00</strong></td><td><strong>R$ 70,00</strong></td></tr>
+              <tr class="answer-row"><td><strong>Ranking</strong></td><td><strong>2º</strong></td><td><strong>2º</strong></td><td><strong>1º</strong></td></tr>
+            </tbody>
+          </table>
+          <p class="mt-3 text-sm text-gray-600">Pela análise tradicional, o produto <strong>C</strong> seria prioritário por apresentar a maior MC unitária (R$ 70).</p>
+        </div>
+      </details>
+
+      <!-- Q2 -->
+      <details class="border border-gray-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition">
+          <span class="font-medium text-gray-800">Questão 2 — Throughput unitário (TOC)</span>
+          <span class="chevron text-gray-400 text-sm">▼</span>
+        </summary>
+        <div class="p-5">
+          <table>
+            <thead><tr><th>Cálculo</th><th>Produto A</th><th>Produto B</th><th>Produto C</th></tr></thead>
+            <tbody>
+              <tr><td>Preço de venda</td><td>R$ 120,00</td><td>R$ 150,00</td><td>R$ 200,00</td></tr>
+              <tr><td>(−) Material direto <em>apenas</em></td><td>R$ 40,00</td><td>R$ 60,00</td><td>R$ 80,00</td></tr>
+              <tr class="answer-row"><td><strong>Throughput unitário</strong></td><td><strong>R$ 80,00</strong></td><td><strong>R$ 90,00</strong></td><td><strong>R$ 120,00</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+            <strong>Por que a MO não entra?</strong> Na TOC, a mão de obra é tratada como despesa operacional (custo fixo de capacidade), pois os trabalhadores são remunerados independentemente do volume produzido. Incluí-la no custo unitário distorceria a análise — seria penalizar um produto pelo uso de um recurso cujo custo já está comprometido de qualquer forma.
+          </div>
+        </div>
+      </details>
+
+      <!-- Q3 -->
+      <details class="border border-gray-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition">
+          <span class="font-medium text-gray-800">Questão 3 — T/RG: Throughput por minuto de gargalo</span>
+          <span class="chevron text-gray-400 text-sm">▼</span>
+        </summary>
+        <div class="p-5">
+          <table>
+            <thead><tr><th>Cálculo</th><th>Produto A</th><th>Produto B</th><th>Produto C</th></tr></thead>
+            <tbody>
+              <tr><td>Throughput unitário</td><td>R$ 80,00</td><td>R$ 90,00</td><td>R$ 120,00</td></tr>
+              <tr><td>Tempo no gargalo (min/un.)</td><td>10 min</td><td>20 min</td><td>40 min</td></tr>
+              <tr class="answer-row"><td><strong>T/RG (R$/min)</strong></td><td><strong>R$ 8,00</strong></td><td><strong>R$ 4,50</strong></td><td><strong>R$ 3,00</strong></td></tr>
+              <tr class="answer-row"><td><strong>Ranking TOC</strong></td><td><strong>1º ✓</strong></td><td><strong>2º</strong></td><td><strong>3º</strong></td></tr>
+            </tbody>
+          </table>
+          <p class="mt-3 text-sm text-gray-600">O produto <strong>A</strong> — que parecia o pior pelo critério tradicional — é o <strong>mais lucrativo para o sistema</strong>: gera R$ 8,00 por minuto de gargalo, quase o triplo do produto C.</p>
+        </div>
+      </details>
+
+      <!-- Q4 -->
+      <details class="border border-gray-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition">
+          <span class="font-medium text-gray-800">Questão 4 — Lucro Líquido mensal nos dois cenários</span>
+          <span class="chevron text-gray-400 text-sm">▼</span>
+        </summary>
+        <div class="p-5 space-y-4">
+          <div class="wrong-row rounded-xl p-4">
+            <p class="font-semibold text-red-800 mb-2">Cenário 1 — Decisão tradicional → prioriza Produto C (maior MC = R$ 70)</p>
+            <p class="text-sm text-gray-700">Capacidade: 9.600 min ÷ 40 min/un. = <strong>240 unidades/mês</strong></p>
+            <p class="text-sm text-gray-700">Throughput total: 240 × R$ 120 = <strong>R$ 28.800</strong></p>
+            <p class="text-sm font-semibold text-red-700 mt-1">Lucro Líquido = R$ 28.800 − R$ 80.000 = <strong>−R$ 51.200 (prejuízo)</strong></p>
+          </div>
+          <div class="answer-row rounded-xl p-4">
+            <p class="font-semibold text-green-800 mb-2">Cenário 2 — Decisão TOC → prioriza Produto A (maior T/RG = R$ 8,00/min)</p>
+            <p class="text-sm text-gray-700">Capacidade: 9.600 min ÷ 10 min/un. = <strong>960 unidades/mês</strong></p>
+            <p class="text-sm text-gray-700">Throughput total: 960 × R$ 80 = <strong>R$ 76.800</strong></p>
+            <p class="text-sm font-semibold text-green-700 mt-1">Lucro Líquido = R$ 76.800 − R$ 80.000 = <strong>−R$ 3.200</strong></p>
+          </div>
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-900">
+            <strong>Impacto da decisão:</strong> A escolha pela ótica TOC gerou um resultado <strong>R$ 48.000 melhor</strong> do que a decisão tradicional — uma diferença de 94% no resultado mensal, apenas por mudar o critério de priorização do mix.
+          </div>
+        </div>
+      </details>
+
+      <!-- Q5 -->
+      <details class="border border-gray-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between bg-gray-50 px-4 py-3 hover:bg-gray-100 transition">
+          <span class="font-medium text-gray-800">Questão 5 — Reflexão crítica</span>
+          <span class="chevron text-gray-400 text-sm">▼</span>
+        </summary>
+        <div class="p-5">
+          <p class="text-gray-700 leading-relaxed">
+            O custeio por absorção distribui custos fixos aos produtos, criando a ilusão de que a maior margem unitária equivale a maior lucratividade do sistema. Contudo, quando existe um gargalo, o que determina o resultado é o <em>throughput</em> gerado por unidade do recurso escasso — não a margem isolada de cada produto. A TOC demonstra que otimizar localmente (priorizar o produto com maior MC) não equivale a otimizar o sistema como um todo, e pode, paradoxalmente, maximizar o prejuízo.
+          </p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <!-- Rodapé conceitual -->
+  <div class="bg-[#1e3a5f] text-white rounded-2xl p-6">
+    <h3 class="font-semibold text-lg mb-4 text-center">As Três Métricas da TOC</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+      <div class="bg-white/10 rounded-xl p-4">
+        <p class="text-2xl font-bold text-yellow-300">Throughput</p>
+        <p class="text-sm mt-1 text-blue-200">Receita − Custos Totalmente Variáveis</p>
+        <p class="text-xs mt-1 text-blue-300">↑ Maximizar</p>
+      </div>
+      <div class="bg-white/10 rounded-xl p-4">
+        <p class="text-2xl font-bold text-yellow-300">Inventário</p>
+        <p class="text-sm mt-1 text-blue-200">Dinheiro "preso" no sistema</p>
+        <p class="text-xs mt-1 text-blue-300">↓ Minimizar</p>
+      </div>
+      <div class="bg-white/10 rounded-xl p-4">
+        <p class="text-2xl font-bold text-yellow-300">Despesa Op.</p>
+        <p class="text-sm mt-1 text-blue-200">Custo de manter o sistema operando</p>
+        <p class="text-xs mt-1 text-blue-300">↓ Minimizar</p>
+      </div>
+    </div>
+    <p class="mt-5 text-blue-300 text-xs text-center">
+      GOLDRATT, E. M.; COX, J. <em>A Meta</em>. São Paulo: Nobel, 2004. |
+      CORBETT NETO, T. <em>Contabilidade de Ganhos</em>. São Paulo: Nobel, 1997.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
